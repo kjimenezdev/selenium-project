@@ -4,35 +4,41 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 public class ProyectoQA {
   
-  private static WebDriver DRIVER;
+  private static WebDriver webDriver;
   
   public static void main(String[] args) {
     
-    System.setProperty("webdriver.chrome.driver","/Users/rapuc/Downloads/chromedriver");
+    System.setProperty("webdriver.chrome.driver","/Users/konradjimenezc/Downloads/chromedriver");
     
-//    if(TC1())
-//      System.out.println("TC1 Aprovado");
-//    else
+  //  if(TC1())
+  // System.out.println("TC1 Aprovado");
+ //   else
 //      System.err.println("TC1 Fallido");
-//    
-    if(TC4())
-      System.out.println("TC4 Aprovado");
-    else
-      System.err.println("TC4 Fallido");
+// 
+    // Test 3
+//    if  (TC3())
+//       System.out.println("TC3 Aprovado");
+//    else 
+//     System.err.println("TC3 Fallido");
+    
+//    if(TC4())
+ //     System.out.println("TC4 Aprovado");
+ //   else
+ //     System.err.println("TC4 Fallido");
     
     
   }
   
   
   public static boolean TC4(){
-    DRIVER = new ChromeDriver();
+    webDriver = new ChromeDriver();
     boolean result = false;
     String baseUrl = "http://demo.nopcommerce.com";
     
-    DRIVER.get(baseUrl);
-    WebElement shoppingCartLink = DRIVER.findElement(By.xpath("//li[@id='topcartlink']"));
+    webDriver.get(baseUrl);
+    WebElement shoppingCartLink = webDriver.findElement(By.xpath("//li[@id='topcartlink']"));
     shoppingCartLink.click();
-    WebElement emptyMessage = DRIVER.findElement(By.xpath("//div[@class='no-data']"));
+    WebElement emptyMessage = webDriver.findElement(By.xpath("//div[@class='no-data']"));
     if(emptyMessage != null){
       if(emptyMessage.getText().equals("Your Shopping Cart is empty!")){
         
@@ -40,20 +46,18 @@ public class ProyectoQA {
       }
     }
     
-    DRIVER.close();
+    webDriver.close();
     return result;
   }
   
   public static boolean TC1(){
-    DRIVER = new ChromeDriver();
+    webDriver = new ChromeDriver();
     String baseUrl = "http://demo.nopcommerce.com";
     String expectedTitle = "nopCommerce demo store";
     String actualTitle = "";
     
-    DRIVER.get(baseUrl);
-    
-    
-    actualTitle = DRIVER.getTitle();
+    webDriver.get(baseUrl);
+    actualTitle = webDriver.getTitle();
     
     
     boolean result = false;
@@ -70,7 +74,54 @@ public class ProyectoQA {
     }catch(InterruptedException ie){
     }
     
-    DRIVER.close();
+    webDriver.close();
     return result;
   }
+  
+  
+  //   
+  public static boolean TC3(){
+    
+    // Verifique que se despliega el mensaje “The wishlist is empty!”
+    webDriver = new ChromeDriver();
+    String baseUrl = "http://demo.nopcommerce.com/";
+    String expectedTitle = "nopCommerce demo store";
+    webDriver.get(baseUrl);
+  
+    
+    WebElement wishListLink = webDriver.findElement(By.xpath("//a[@class='ico-wishlist']"));
+    wishListLink.click();
+    WebElement emptyMessage = webDriver.findElement(By.xpath("//div[@class='no-data']"));
+   if(emptyMessage != null){
+      if(emptyMessage.getText().equals("The wishlist is empty!")){
+      System.out.println("El wishlist está vacío");
+      }
+   }
+    
+    // Busca el Librinho
+   WebElement searchBarElement = webDriver.findElement(By.xpath("//input[@id='small-searchterms']"));
+   searchBarElement.sendKeys("Fahrenheit 451");
+    WebElement searchButton = webDriver.findElement(By.xpath("//input[@class='button-1 search-box-button']"));
+    searchButton.click();
+ 
+    // Agrega el mop al wishlist
+    WebElement withListButton = webDriver.findElement(By.xpath("//input[@class='button-2 add-to-wishlist-button']"));
+    withListButton.click();
+
+    // Verifica que si se agregara el hp  
+    webDriver.get(baseUrl);
+    wishListLink = webDriver.findElement(By.xpath("//a[@class='ico-wishlist']"));
+    wishListLink.click();
+    WebElement table  = webDriver.findElement(By.xpath("//table[@class='cart']"));
+    if(table != null){
+          System.out.println("Se agregó el elemento!!");
+      } else {
+             System.out.println("El wishlist cart está vacío");
+      } 
+   
+     return true;
+}
+  
+  
+  
 }
