@@ -6,6 +6,12 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.util.concurrent.TimeUnit;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.StringTokenizer;
+import java.io.IOException;
 
 public class ProyectoQA {
   
@@ -14,12 +20,12 @@ public class ProyectoQA {
   public static void main(String[] args) {
     
 //    System.setProperty("webdriver.chrome.driver","/Users/konradjimenezc/Downloads/chromedriver");
-    System.setProperty("webdriver.chrome.driver","/Users/rapuc/Downloads/chromedriver");
-    /*
-    if(TC1())
+    System.setProperty("webdriver.chrome.driver","C:\\Users\\Usuario\\Downloads\\chromedriver_win32\\chromedriver.exe");
+    
+    /*if(TC1())
       System.out.println("TC1 Aprovado");
     else
-      System.err.println("TC1 Fallido");*/
+      System.err.println("TC1 Fallido");
     if(TC2())
       System.out.println("TC2 Aprovado");
     else
@@ -35,7 +41,11 @@ public class ProyectoQA {
     if(TC5())
       System.out.println("TC5 Aprovado");
     else
-      System.err.println("TC5 Fallido");
+      System.err.println("TC5 Fallido");*/
+    if(TC7())
+      System.out.println("TC7 Aprovado");
+    else
+      System.err.println("TC7 Fallido");
   }
   
   
@@ -227,10 +237,71 @@ public class ProyectoQA {
     String expectedMessage = "Your Shopping Cart is empty!";
     String actualMessage = webDriver.findElement(By.className("no-data")).getText();
     
-    boolean emptyCart = (actualTitle.contentEquals(expectedTitle))? true : false;
+    boolean emptyCart = (actualMessage.contentEquals(expectedMessage))? true : false;
     
     webDriver.quit();
     return correctTitle && emptyCart;
+  }
+  
+  public static boolean TC7(){
+    String baseUrl = "http://demo.nopcommerce.com/";
+      
+    webDriver = new ChromeDriver();
+      
+    //Ir al URL
+    webDriver.get(baseUrl);
+      
+    webDriver.findElement(By.className("ico-wishlist")).click();
+    
+    String expectedMessage = "The wishlist is empty!";
+    String actualMessage = webDriver.findElement(By.className("no-data")).getText();
+    
+    boolean emptyCart = (actualMessage.contentEquals(expectedMessage))? true : false;
+    
+    File file = new File("C:\\Users\\Usuario\\Downloads\\CI2400 Investigación - Parametros\\Parametros.csv");
+    if(!file.exists()){
+      return false;
+    }
+    try{
+      BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+      String line;
+      
+      while((line = bufferedReader.readLine()) != null){
+        StringTokenizer stringTokenizer = new StringTokenizer(line,",");
+        
+        String productName = stringTokenizer.nextToken();
+        
+        webDriver.findElement(By.id("small-searchterms")).sendKeys(productName);
+        webDriver.findElement(By.className("search-box-button")).click();
+        
+        WebDriverWait wait = new WebDriverWait(webDriver, 10);
+        wait.until(ExpectedConditions.elementToBeClickable(webDriver.findElement(By.className("add-to-wishlist-button"))));
+        
+        webDriver.findElement(By.className("add-to-wishlist-button")).click();
+        webDriver.findElement(By.className("ico-wishlist")).click();
+        webDriver.findElement(By.className("qty-input")).clear();
+        webDriver.findElement(By.className("qty-input")).sendKeys(stringTokenizer.nextToken());
+        webDriver.findElement(By.className("update-wishlist-button")).click();
+        
+        String expectedPrice = stringTokenizer.nextToken();
+        String actualPrice = webDriver.findElement(By.className("product-subtotal")).getText();
+    
+        boolean correctPrice = (actualPrice.contentEquals(expectedPrice))? true : false;
+        
+        webDriver.findElement(By.name("removefromcart")).click();
+        webDriver.findElement(By.className("update-wishlist-button")).click();
+        
+        System.out.println(productName + " fue procesado de manera " + ((correctPrice)? "correcta" : "incorrecta"));
+      }
+      bufferedReader.close();
+    }catch(IOException e){
+      e.printStackTrace();
+      webDriver.quit();
+      return false;
+    }
+    
+    webDriver.quit();
+    return emptyCart;
   }
   
 }
