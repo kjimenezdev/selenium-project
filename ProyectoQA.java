@@ -217,23 +217,29 @@ public class ProyectoQA {
     BufferedReader br = null;
     String line = "";
     String cvsSplitBy = ","
-      
-      try {
+      String itemNameCSV = "";
+    String quantityCSV = "";
+    String subtotalCSV = "";
+    
+    try {
       br = new BufferedReader(new FileReader(csvFile));
       while ((line = br.readLine()) != null) {
-        
+        itemNameCSV =data[0];
+        quantityCSV =data[1];
+        subtotal =data[2];
         // use comma as separator
         String[] data = line.split(cvsSplitBy);
-        searchItem(data[0]);
+        searchItem(itemNameCSV);
         WebElement addToWishListButton = webDriver.findElement(By.xpath("//input[@class='button-2 add-to-wishlist-button']"));
         addToWishListButton.click();
         WebElement wishListLink = webDriver.findElement(By.xpath("//a[@class='ico-wishlist']"));
         wishListLink.click();
-            webDriver.findElement(By.className("qty-input")).clear();
-            webDriver.findElement(By.className("qty-input")).sendKeys(data[1]);
-            <span class="product-subtotal">$27.00</span>
+        webDriver.findElement(By.className("qty-input")).clear();
+        webDriver.findElement(By.className("qty-input")).sendKeys(quantityCSV);
+        WebElement subtotal = webDriver.findElement(By.xpath("//span[@class='product-subtotal']"));
         
         
+        boolean correctSubtotal = (subtotal.getText().contentEquals(subtotalCSV))? true : false;
       }
       
     } catch (FileNotFoundException e) {
@@ -249,11 +255,10 @@ public class ProyectoQA {
         }
       }
     }
-    WebElement busqueda = webDriver.findElement(By.id("small-searchterms"));
-    busqueda
-      
-      
-      webDriver.close();
+    
+    
+    
+    webDriver.close();
     return true;
   }
   
