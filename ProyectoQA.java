@@ -1,7 +1,12 @@
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import java.util.concurrent.TimeUnit;
+
 public class ProyectoQA {
   
   private static WebDriver webDriver;
@@ -10,24 +15,27 @@ public class ProyectoQA {
     
 //    System.setProperty("webdriver.chrome.driver","/Users/konradjimenezc/Downloads/chromedriver");
     System.setProperty("webdriver.chrome.driver","/Users/rapuc/Downloads/chromedriver");
-    
-//  if(TC1())
-    // System.out.println("TC1 Aprovado");
-    //   else
-//      System.err.println("TC1 Fallido");
-// 
-    // Test 3
-    if  (TC3())
-      System.out.println("TC3 Aprovado");
+    /*
+    if(TC1())
+      System.out.println("TC1 Aprovado");
+    else
+      System.err.println("TC1 Fallido");*/
+    if(TC2())
+      System.out.println("TC2 Aprovado");
+    else
+      System.err.println("TC2 Fallido");
+    if(TC3())
+       System.out.println("TC3 Aprovado");
     else 
-      System.err.println("TC3 Fallido");
-    
+     System.err.println("TC3 Fallido");
     if(TC4())
       System.out.println("TC4 Aprovado");
     else
       System.err.println("TC4 Fallido");
-    
-    
+    if(TC5())
+      System.out.println("TC5 Aprovado");
+    else
+      System.err.println("TC5 Fallido");
   }
   
   
@@ -54,14 +62,70 @@ public class ProyectoQA {
       Thread.sleep(5000);
     }catch(InterruptedException ie){
     }
-    webDriver.close();
+    webDriver.quit();
     return result;
+  }
+  
+  public static boolean TC2(){
+    try{
+      String baseUrl = "http://demo.nopcommerce.com/";
+      boolean result = true;
+      
+      webDriver = new ChromeDriver();
+      
+      //Ir al URL
+      webDriver.get(baseUrl);
+      
+      //Opcion para iniciar el navegador maximizado
+      //webDriver.manage().window().maximize();
+      
+      int[] targetListItems = {0, 4, 8, 12, 13, 14, 15};
+      
+      for(int i=0;i<7; i++){
+        WebElement list = webDriver.findElement(By.className("top-menu"));
+        
+        if(list.isDisplayed()){
+          WebElement element = list.findElements(By.tagName("li")).get(targetListItems[i]);
+          
+          WebDriverWait wait = new WebDriverWait(webDriver, 10);
+          wait.until(ExpectedConditions.elementToBeClickable(element));
+          
+          element.click();
+          webDriver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+          WebElement logo = webDriver.findElement(By.className("header-logo"));
+          logo.click();
+          webDriver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+        }
+        
+        else{
+          WebElement menuToggle = webDriver.findElement(By.className("menu-toggle"));
+          menuToggle.click();
+          
+          WebElement listMobile = webDriver.findElement(By.cssSelector(".top-menu.mobile"));
+          WebElement element = listMobile.findElements(By.cssSelector("li")).get(targetListItems[i]);
+          
+          WebDriverWait wait = new WebDriverWait(webDriver, 10);
+          wait.until(ExpectedConditions.elementToBeClickable(element));
+          
+          element.click();
+          webDriver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+          WebElement logo = webDriver.findElement(By.className("header-logo"));
+          logo.click();
+          webDriver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+        }
+      }
+      
+      return result;
+    }
+    catch(Exception e){
+      e.printStackTrace();
+      return false;
+    }
   }
   
   public static boolean TC3(){
     
-    // Verifique que se despliega el mensaje “The wishlist is empty!”
-    webDriver = new ChromeDriver();
+    // Verifique que se despliega el mensaje
     String baseUrl = "http://demo.nopcommerce.com/";
     webDriver.get(baseUrl);
     
@@ -135,6 +199,38 @@ public class ProyectoQA {
     return emptyShoppingCartList && addedElement;
   }
   
-  
+  public static boolean TC5(){
+    String baseUrl = "http://demo.nopcommerce.com";
+      
+    webDriver.get(baseUrl);
+    WebElement shoppingCartLink = webDriver.findElement(By.xpath("//li[@id='topcartlink']"));
+    shoppingCartLink.click();
+      
+    Select dropdown = new Select(webDriver.findElement(By.className("country-input")));
+    dropdown.selectByVisibleText("Costa Rica");
+    webDriver.findElement(By.className("zip-input")).sendKeys("35000");
+    webDriver.findElement(By.className("estimate-shipping-button")).click();
+    webDriver.findElement(By.id("termsofservice")).click();
+    webDriver.findElement(By.id("checkout")).click();
+    
+    String expectedTitle = "Welcome, Please Sign In!";
+    String actualTitle = webDriver.findElement(By.className("page-title")).getText();
+    
+    boolean correctTitle = (actualTitle.contentEquals(expectedTitle))? true : false;
+    
+    webDriver.findElement(By.xpath("//li[@id='topcartlink']")).click();
+    
+    webDriver.findElement(By.className("qty-input")).clear();
+    webDriver.findElement(By.className("qty-input")).sendKeys("0");
+    webDriver.findElement(By.className("update-cart-button")).click();
+    
+    String expectedMessage = "Your Shopping Cart is empty!";
+    String actualMessage = webDriver.findElement(By.className("no-data")).getText();
+    
+    boolean emptyCart = (actualTitle.contentEquals(expectedTitle))? true : false;
+    
+    webDriver.quit();
+    return correctTitle && emptyCart;
+  }
   
 }
