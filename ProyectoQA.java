@@ -6,11 +6,11 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.util.concurrent.TimeUnit;
+import java.util.StringTokenizer;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.StringTokenizer;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class ProyectoQA {
@@ -22,6 +22,7 @@ public class ProyectoQA {
 //    System.setProperty("webdriver.chrome.driver","/Users/konradjimenezc/Downloads/chromedriver");
 //    System.setProperty("webdriver.chrome.driver","C:\\Users\\Usuario\\Downloads\\chromedriver_win32\\chromedriver.exe");
     System.setProperty("webdriver.chrome.driver","/Users/rapuc/Downloads/chromedriver");
+
     if(TC1())
       System.out.println("TC1 Aprovado");
     else
@@ -135,18 +136,16 @@ public class ProyectoQA {
   
   public static boolean TC3(){
     
-    // Verifique que se despliega el mensaje
     String baseUrl = "http://demo.nopcommerce.com/";
     webDriver.get(baseUrl);
-    
+
     boolean emptyWishList = checkEmptyWishList(webDriver);
     searchItem(webDriver,"Fahrenheit 451");
-    WebElement withListButton = webDriver.findElement(By.xpath("//input[@class='button-2 add-to-wishlist-button']"));
-    withListButton.click();
-    
+    WebElement addToWishListButton = webDriver.findElement(By.xpath("//input[@class='button-2 add-to-wishlist-button']"));
+    addToWishListButton.click();
     webDriver.get(baseUrl);
-    boolean addedElement =  !checkEmptyWishList(webDriver);
     
+    boolean addedElement = !checkEmptyWishList(webDriver);
     return emptyWishList && addedElement;
   }
   
@@ -156,14 +155,12 @@ public class ProyectoQA {
     String baseUrl = "http://demo.nopcommerce.com";
     
     boolean emptyShoppingCartList = checkEmptyShoppingCart(webDriver);
-    
-    
-    WebElement wishListLink = webDriver.findElement(By.className("ico-wishlist"));
-    wishListLink.click();
-    
+   WebDriverWait wait = new WebDriverWait(webDriver, 10);
+    wait.until(ExpectedConditions.elementToBeClickable(webDriver.findElement(By.className("ico-wishlist")))).click();
     webDriver.findElement(By.name("addtocart")).click(); //checkbox
     WebElement addToCartButton = webDriver.findElement(By.name("addtocartbutton"));
     addToCartButton.click();
+    
     boolean addedElement = !checkEmptyShoppingCart(webDriver);
     
     WebElement continueShoppingButton = webDriver.findElement(By.name("continueshopping"));
@@ -200,8 +197,12 @@ public class ProyectoQA {
     
     boolean emptyCart = checkEmptyShoppingCart(webDriver);
     
-    webDriver.quit();
     return correctTitle && emptyCart;
+  }
+  
+  public static boolean TC6(){
+    webDriver.close();
+    return true;
   }
   
   public static boolean TC7(){
@@ -214,13 +215,14 @@ public class ProyectoQA {
     
 //    File file = new File("C:\\Users\\Usuario\\Downloads\\CI2400 Investigaci�n - Parametros\\Parametros.csv");
     File file = new File("/Users/rapuc/Downloads/Parametros.csv");
+     BufferedReader bufferedReader = null;
     if(!file.exists()){
       System.out.println("Bad file url");
       return false;
     }
     boolean correctPrice = true;
     try{
-      BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+      bufferedReader= new BufferedReader(new FileReader(file));
       String line;
       
       while((line = bufferedReader.readLine()) != null){
@@ -246,16 +248,21 @@ public class ProyectoQA {
           correctPrice = false;
         }
         
-        webDriver.findElement(By.name("removefromcart")).click();
-        webDriver.findElement(By.className("update-wishlist-button")).click();
-        
-        System.out.println(productName + " fue procesado de manera " + ((correctPrice)? "correcta" : "incorrecta"));
+
       }
-      bufferedReader.close();
-    }catch(IOException e){
+      
+    } catch (FileNotFoundException e) {
       e.printStackTrace();
-      webDriver.quit();
-      return false;
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      if (bufferedReader != null) {
+        try {
+          bufferedReader.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
     }
     
     webDriver.quit();
