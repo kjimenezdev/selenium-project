@@ -13,37 +13,37 @@ public class ProyectoQA {
   
   public static void main(String[] args) {
     
-//    System.setProperty("webdriver.chrome.driver","/Users/konradjimenezc/Downloads/chromedriver");
-    System.setProperty("webdriver.chrome.driver","/Users/rapuc/Downloads/chromedriver");
-    
-    if(TC1())
-      System.out.println("TC1 Aprovado");
-    else
-      System.err.println("TC1 Fallido");
-    if(TC2())
-      System.out.println("TC2 Aprovado");
-    else
-      System.err.println("TC2 Fallido");
-    if(TC3())
-      System.out.println("TC3 Aprovado");
-    else 
-      System.err.println("TC3 Fallido");
-    if(TC4())
-      System.out.println("TC4 Aprovado");
-    else
-      System.err.println("TC4 Fallido");
-    if(TC5())
-      System.out.println("TC5 Aprovado");
-    else
-      System.err.println("TC5 Fallido");   
+    System.setProperty("webdriver.chrome.driver","/Users/konradjimenezc/Downloads/chromedriver");
+//    System.setProperty("webdriver.chrome.driver","/Users/rapuc/Downloads/chromedriver");
+//    
+//    if(TC1())
+//      System.out.println("TC1 Aprovado");
+//    else
+//      System.err.println("TC1 Fallido");
+//    if(TC2())
+//      System.out.println("TC2 Aprovado");
+//    else
+//      System.err.println("TC2 Fallido");
+//    if(TC3())
+//      System.out.println("TC3 Aprovado");
+//    else 
+//      System.err.println("TC3 Fallido");
+//    if(TC4())
+//      System.out.println("TC4 Aprovado");
+//    else
+//      System.err.println("TC4 Fallido");
+//    if(TC5())
+//      System.out.println("TC5 Aprovado");
+//    else
+//      System.err.println("TC5 Fallido");   
     if(TC6())      
       System.out.println("TC6 Aprovado");
     else
       System.err.println("TC6 Fallido");
-    if(TC7())
-      System.out.println("TC7 Aprovado");
-    else
-      System.err.println("TC7 Fallido");
+//    if(TC7())
+//      System.out.println("TC7 Aprovado");
+//    else
+//      System.err.println("TC7 Fallido");
   }
   
   
@@ -201,64 +201,97 @@ public class ProyectoQA {
   }
   
   public static boolean TC6(){
-    webDriver.close();
-    return true;
+    String baseUrl = "http://demo.nopcommerce.com";
+    webDriver = new ChromeDriver();
+   
+    webDriver.get(baseUrl);
+    WebElement list = webDriver.findElement(By.className("top-menu"));
+    WebElement element = list.findElements(By.tagName("li")).get(0);
+    WebDriverWait wait = new WebDriverWait(webDriver, 10);
+    wait.until(ExpectedConditions.elementToBeClickable(element));
+    element.click();
+    
+    WebElement itemGrid = webDriver.findElement(By.className("item-grid"));
+    WebElement softwareElement = itemGrid.findElements(By.className("item-box")).get(2);
+    wait = new WebDriverWait(webDriver, 10);
+    wait.until(ExpectedConditions.elementToBeClickable(softwareElement));
+    softwareElement.click();
+    
+    WebElement iconContainer= webDriver.findElement(By.className("product-viewmode"));
+    WebElement iconByList = iconContainer.findElements(By.tagName("a")).get(1);
+    wait = new WebDriverWait(webDriver, 10);
+    wait.until(ExpectedConditions.elementToBeClickable(iconByList));
+    iconByList.click();
+   
+    Select dropdown = new Select(webDriver.findElement(By.xpath("//select[@id='products-orderby']")));
+    dropdown.selectByVisibleText("Price: High to Low");
+    
+   itemGrid = webDriver.findElement(By.className("item-grid"));
+   softwareElement = itemGrid.findElements(By.className("item-box")).get(0);
+   WebElement productItem = softwareElement.findElements(By.className("product-item")).get(0);
+   WebElement itemDetails = productItem.findElements(By.className("details")).get(0);
+   WebElement itemTitle = itemDetails.findElements(By.tagName("h2")).get(0);
+   String itemTitleString = itemTitle.getText();
+   System.out.println(itemTitleString); 
+   webDriver.close();
+   return (itemTitleString.contentEquals("Adobe Photoshop CS4")) ? true : false;
+   
   }
   
   public static boolean TC7(){
-    String baseUrl = "http://demo.nopcommerce.com/";
-    boolean result = true;
-    
-    webDriver = new ChromeDriver();
-    webDriver.get(baseUrl);
-    
-    boolean emptyWishList = checkEmptyWishList(webDriver);
-    String csvFile = "/Users/rapuc/Downloads/Parametros.csv";
-    BufferedReader br = null;
-    String line = "";
-    String cvsSplitBy = ","
-      String itemNameCSV = "";
-    String quantityCSV = "";
-    String subtotalCSV = "";
-    
-    try {
-      br = new BufferedReader(new FileReader(csvFile));
-      while ((line = br.readLine()) != null) {
-        itemNameCSV =data[0];
-        quantityCSV =data[1];
-        subtotal =data[2];
-        // use comma as separator
-        String[] data = line.split(cvsSplitBy);
-        searchItem(itemNameCSV);
-        WebElement addToWishListButton = webDriver.findElement(By.xpath("//input[@class='button-2 add-to-wishlist-button']"));
-        addToWishListButton.click();
-        WebElement wishListLink = webDriver.findElement(By.xpath("//a[@class='ico-wishlist']"));
-        wishListLink.click();
-        webDriver.findElement(By.className("qty-input")).clear();
-        webDriver.findElement(By.className("qty-input")).sendKeys(quantityCSV);
-        WebElement subtotal = webDriver.findElement(By.xpath("//span[@class='product-subtotal']"));
-        
-        
-        boolean correctSubtotal = (subtotal.getText().contentEquals(subtotalCSV))? true : false;
-      }
-      
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    } finally {
-      if (br != null) {
-        try {
-          br.close();
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-      }
-    }
-    
-    
-    
-    webDriver.close();
+//    String baseUrl = "http://demo.nopcommerce.com/";
+//    boolean result = true;
+//    
+//    webDriver = new ChromeDriver();
+//    webDriver.get(baseUrl);
+//    
+//    boolean emptyWishList = checkEmptyWishList(webDriver);
+//    String csvFile = "/Users/rapuc/Downloads/Parametros.csv";
+//    BufferedReader br = null;
+//    String line = "";
+//    String cvsSplitBy = ",";
+//      String itemNameCSV = "";
+//    String quantityCSV = "";
+//    String subtotalCSV = "";
+//    
+//    try {
+//      br = new BufferedReader(new FileReader(csvFile));
+//      while ((line = br.readLine()) != null) {
+//        itemNameCSV =data[0];
+//        quantityCSV =data[1];
+//        subtotal =data[2];
+//        // use comma as separator
+//        String[] data = line.split(cvsSplitBy);
+//        searchItem(itemNameCSV);
+//        WebElement addToWishListButton = webDriver.findElement(By.xpath("//input[@class='button-2 add-to-wishlist-button']"));
+//        addToWishListButton.click();
+//        WebElement wishListLink = webDriver.findElement(By.xpath("//a[@class='ico-wishlist']"));
+//        wishListLink.click();
+//        webDriver.findElement(By.className("qty-input")).clear();
+//        webDriver.findElement(By.className("qty-input")).sendKeys(quantityCSV);
+//        WebElement subtotal = webDriver.findElement(By.xpath("//span[@class='product-subtotal']"));
+//        
+//        
+//        boolean correctSubtotal = (subtotal.getText().contentEquals(subtotalCSV))? true : false;
+//      }
+//      
+//    } catch (FileNotFoundException e) {
+//      e.printStackTrace();
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    } finally {
+//      if (br != null) {
+//        try {
+//          br.close();
+//        } catch (IOException e) {
+//          e.printStackTrace();
+//        }
+//      }
+//    }
+//    
+//    
+//    
+//    webDriver.close();
     return true;
   }
   
