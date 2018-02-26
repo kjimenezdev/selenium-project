@@ -33,33 +33,33 @@ public class ProyectoQA {
   
   public static void main(String[] args) {
     
-    System.setProperty("webdriver.chrome.driver","C:\\Users\\Usuario\\Downloads\\chromedriver_win32\\chromedriver.exe");
-//    System.setProperty("webdriver.chrome.driver","/Users/rapuc/Downloads/chromedriver");
+//    System.setProperty("webdriver.chrome.driver","C:\\Users\\Usuario\\Downloads\\chromedriver_win32\\chromedriver.exe");
+    System.setProperty("webdriver.chrome.driver","/Users/rapuc/Downloads/chromedriver");
     
-    if(TC1())
-     System.out.println("TC1 Aprovado");
-     else
-     System.err.println("TC1 Fallido");
-     if(TC2())
-     System.out.println("TC2 Aprovado");
-     else
-     System.err.println("TC2 Fallido");
-     if(TC3())
-     System.out.println("TC3 Aprovado");
-     else 
-     System.err.println("TC3 Fallido");
-     if(TC4())
-     System.out.println("TC4 Aprovado");
-     else
-     System.err.println("TC4 Fallido");
-     if(TC5())
-     System.out.println("TC5 Aprovado");
-     else
-     System.err.println("TC5 Fallido");   
+    /*if(TC1())
+      System.out.println("TC1 Aprovado");
+    else
+      System.err.println("TC1 Fallido");
+    if(TC2())
+      System.out.println("TC2 Aprovado");
+    else
+      System.err.println("TC2 Fallido");
+    if(TC3())
+      System.out.println("TC3 Aprovado");
+    else 
+      System.err.println("TC3 Fallido");
+    if(TC4())
+      System.out.println("TC4 Aprovado");
+    else
+      System.err.println("TC4 Fallido");
+    if(TC5())
+      System.out.println("TC5 Aprovado");
+    else
+      System.err.println("TC5 Fallido");   
     if(TC6())      
       System.out.println("TC6 Aprovado");
     else
-      System.err.println("TC6 Fallido");
+      System.err.println("TC6 Fallido");*/
     if(TC7())
       System.out.println("TC7 Aprovado");
     else
@@ -312,15 +312,16 @@ public class ProyectoQA {
   }
   
   public static boolean TC7(){
+    
     String baseUrl = "http://demo.nopcommerce.com/";
     
     webDriver = new ChromeDriver();
     webDriver.get(baseUrl);
-    
+    webDriver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
     boolean emptyWishList = checkEmptyWishList(webDriver);
     
-    File file = new File("C:\\Users\\Usuario\\Downloads\\CI2400 Investigación - Parametros\\Parametros.csv");
-    //File file = new File("/Users/rapuc/Downloads/Parametros.csv");
+    //File file = new File("C:\\Users\\Usuario\\Downloads\\CI2400 Investigaciï¿½n - Parametros\\Parametros.csv");
+    File file = new File("/Users/rapuc/Downloads/Parametros.csv");
     BufferedReader bufferedReader = null;
     if(!file.exists()){
       System.out.println("Archivo no existe");
@@ -342,13 +343,14 @@ public class ProyectoQA {
         wait.until(ExpectedConditions.elementToBeClickable(webDriver.findElement(By.className("add-to-wishlist-button"))));
         webDriver.findElement(By.className("add-to-wishlist-button")).click();
         
-        wait.until(ExpectedConditions.elementToBeClickable(webDriver.findElement(By.className("ico-wishlist"))));
+        wait.until(ExpectedConditions.elementToBeClickable(By.className("ico-wishlist")));
         webDriver.findElement(By.className("ico-wishlist")).click();
         
+        wait.until(ExpectedConditions.elementToBeClickable(By.className("qty-input")));
         webDriver.findElement(By.className("qty-input")).clear();
         webDriver.findElement(By.className("qty-input")).sendKeys(stringTokenizer.nextToken());
         
-        wait.until(ExpectedConditions.elementToBeClickable(webDriver.findElement(By.className("update-wishlist-button"))));
+        wait.until(ExpectedConditions.elementToBeClickable(By.className("update-wishlist-button")));
         webDriver.findElement(By.className("update-wishlist-button")).click();
         
         String expectedPrice = stringTokenizer.nextToken();
