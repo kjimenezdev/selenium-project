@@ -36,7 +36,7 @@ public class ProyectoQA {
 //    System.setProperty("webdriver.chrome.driver","C:\\Users\\Usuario\\Downloads\\chromedriver_win32\\chromedriver.exe");
     System.setProperty("webdriver.chrome.driver","/Users/rapuc/Downloads/chromedriver");
     
-    /*if(TC1())
+    if(TC1())
       System.out.println("TC1 Aprovado");
     else
       System.err.println("TC1 Fallido");
@@ -59,7 +59,7 @@ public class ProyectoQA {
     if(TC6())      
       System.out.println("TC6 Aprovado");
     else
-      System.err.println("TC6 Fallido");*/
+      System.err.println("TC6 Fallido");
     if(TC7())
       System.out.println("TC7 Aprovado");
     else
@@ -382,6 +382,7 @@ public class ProyectoQA {
           e.printStackTrace();
         }
       }
+      webDriver.quit();
     }
     
     webDriver.quit();
@@ -400,6 +401,7 @@ public class ProyectoQA {
       }
     }  
     catch(Exception e ) {
+      webdriver.quit();
     }
     return false;
   }
@@ -416,6 +418,7 @@ public class ProyectoQA {
       }
     }
     catch(Exception e ) {
+      webdriver.quit();
     }
     return false;
   }
