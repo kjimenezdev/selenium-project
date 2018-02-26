@@ -22,26 +22,26 @@ public class ProyectoQA {
 //    System.setProperty("webdriver.chrome.driver","/Users/konradjimenezc/Downloads/chromedriver");
 //    System.setProperty("webdriver.chrome.driver","C:\\Users\\Usuario\\Downloads\\chromedriver_win32\\chromedriver.exe");
     System.setProperty("webdriver.chrome.driver","/Users/rapuc/Downloads/chromedriver");
-    /*if(TC1())
-     System.out.println("TC1 Aprovado");
-     else
-     System.err.println("TC1 Fallido");
-     if(TC2())
-     System.out.println("TC2 Aprovado");
-     else
-     System.err.println("TC2 Fallido");
-     if(TC3())
-     System.out.println("TC3 Aprovado");
-     else 
-     System.err.println("TC3 Fallido");
-     if(TC4())
-     System.out.println("TC4 Aprovado");
-     else
-     System.err.println("TC4 Fallido");
-     if(TC5())
-     System.out.println("TC5 Aprovado");
-     else
-     System.err.println("TC5 Fallido");*/
+    if(TC1())
+      System.out.println("TC1 Aprovado");
+    else
+      System.err.println("TC1 Fallido");
+    if(TC2())
+      System.out.println("TC2 Aprovado");
+    else
+      System.err.println("TC2 Fallido");
+    if(TC3())
+      System.out.println("TC3 Aprovado");
+    else 
+      System.err.println("TC3 Fallido");
+    if(TC4())
+      System.out.println("TC4 Aprovado");
+    else
+      System.err.println("TC4 Fallido");
+    if(TC5())
+      System.out.println("TC5 Aprovado");
+    else
+      System.err.println("TC5 Fallido");
     if(TC7())
       System.out.println("TC7 Aprovado");
     else
@@ -139,36 +139,13 @@ public class ProyectoQA {
     String baseUrl = "http://demo.nopcommerce.com/";
     webDriver.get(baseUrl);
     
-    boolean emptyWishList = false;
-    WebElement wishListLink = webDriver.findElement(By.xpath("//a[@class='ico-wishlist']"));
-    wishListLink.click();
-    WebElement emptyMessage = webDriver.findElement(By.xpath("//div[@class='no-data']"));
-    if(emptyMessage != null){
-      if(emptyMessage.getText().equals("The wishlist is empty!")){
-        System.out.println("El wishlist está vacío");
-        emptyWishList = true;
-      }
-    }
-    
-    WebElement searchBarElement = webDriver.findElement(By.id("small-searchterms"));
-    searchBarElement.sendKeys("Fahrenheit 451");
-    WebElement searchButton = webDriver.findElement(By.xpath("//input[@class='button-1 search-box-button']"));
-    searchButton.click();
-    
+    boolean emptyWishList = checkEmptyWishList(webDriver);
+    searchItem(webDriver,"Fahrenheit 451");
     WebElement withListButton = webDriver.findElement(By.xpath("//input[@class='button-2 add-to-wishlist-button']"));
     withListButton.click();
     
     webDriver.get(baseUrl);
-    boolean addedElement = false;
-    wishListLink = webDriver.findElement(By.xpath("//a[@class='ico-wishlist']"));
-    wishListLink.click();
-    WebElement table  = webDriver.findElement(By.xpath("//table[@class='cart']"));
-    if(table != null){
-      System.out.println("Se agregó el elemento!!");
-      addedElement = true;
-    } else {
-      System.out.println("El wishlist cart está vacío");
-    } 
+    boolean addedElement =  !checkEmptyWishList(webDriver);
     
     return emptyWishList && addedElement;
   }
@@ -178,30 +155,17 @@ public class ProyectoQA {
     boolean result = false;
     String baseUrl = "http://demo.nopcommerce.com";
     
-    boolean emptyShoppingCartList = false;
-    WebElement shoppingCartLink = webDriver.findElement(By.id("topcartlink"));
-    shoppingCartLink.click();
-    WebElement emptyMessage = webDriver.findElement(By.xpath("//div[@class='no-data']"));
-    if(emptyMessage != null){
-      if(emptyMessage.getText().equals("Your Shopping Cart is empty!")){
-        System.out.println("El Shopping Cart está vacío");
-        emptyShoppingCartList = true;
-      }
-    }
-    WebElement wishListLink = webDriver.findElement(By.xpath("//a[@class='ico-wishlist']"));
+    boolean emptyShoppingCartList = checkEmptyShoppingCart(webDriver);
+    
+    
+    WebElement wishListLink = webDriver.findElement(By.className("ico-wishlist"));
     wishListLink.click();
     
     webDriver.findElement(By.name("addtocart")).click(); //checkbox
     WebElement addToCartButton = webDriver.findElement(By.name("addtocartbutton"));
     addToCartButton.click();
-    boolean addedElement = false;
-    WebElement table = webDriver.findElement(By.xpath("//table[@class='cart']"));
-    if(table != null){
-      System.out.println("Se agregó el elemento!!");
-      addedElement = true;
-    } else {
-      System.out.println("El Shopping Cart cart está vacío");
-    } 
+    boolean addedElement = !checkEmptyShoppingCart(webDriver);
+    
     WebElement continueShoppingButton = webDriver.findElement(By.name("continueshopping"));
     continueShoppingButton.click();    
     
@@ -213,7 +177,7 @@ public class ProyectoQA {
     String baseUrl = "http://demo.nopcommerce.com";
     
     webDriver.get(baseUrl);
-    WebElement shoppingCartLink = webDriver.findElement(By.xpath("//li[@id='topcartlink']"));
+    WebElement shoppingCartLink = webDriver.findElement(By.id("topcartlink"));
     shoppingCartLink.click();
     
     Select dropdown = new Select(webDriver.findElement(By.className("country-input")));
@@ -228,16 +192,13 @@ public class ProyectoQA {
     
     boolean correctTitle = (actualTitle.contentEquals(expectedTitle))? true : false;
     
-    webDriver.findElement(By.xpath("//li[@id='topcartlink']")).click();
+    webDriver.findElement(By.id("topcartlink")).click();
     
     webDriver.findElement(By.className("qty-input")).clear();
     webDriver.findElement(By.className("qty-input")).sendKeys("0");
     webDriver.findElement(By.className("update-cart-button")).click();
     
-    String expectedMessage = "Your Shopping Cart is empty!";
-    String actualMessage = webDriver.findElement(By.className("no-data")).getText();
-    
-    boolean emptyCart = (actualMessage.contentEquals(expectedMessage))? true : false;
+    boolean emptyCart = checkEmptyShoppingCart(webDriver);
     
     webDriver.quit();
     return correctTitle && emptyCart;
@@ -247,16 +208,9 @@ public class ProyectoQA {
     String baseUrl = "http://demo.nopcommerce.com/";
     
     webDriver = new ChromeDriver();
-    
-    //Ir al URL
     webDriver.get(baseUrl);
     
-    webDriver.findElement(By.className("ico-wishlist")).click();
-    
-    String expectedMessage = "The wishlist is empty!";
-    String actualMessage = webDriver.findElement(By.className("no-data")).getText();
-    
-    boolean emptyCart = (actualMessage.contentEquals(expectedMessage))? true : false;
+    boolean emptyWishList = checkEmptyWishList(webDriver);
     
 //    File file = new File("C:\\Users\\Usuario\\Downloads\\CI2400 Investigaci�n - Parametros\\Parametros.csv");
     File file = new File("/Users/rapuc/Downloads/Parametros.csv");
@@ -264,6 +218,7 @@ public class ProyectoQA {
       System.out.println("Bad file url");
       return false;
     }
+    boolean correctPrice = true;
     try{
       BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
       String line;
@@ -273,8 +228,7 @@ public class ProyectoQA {
         
         String productName = stringTokenizer.nextToken();
         
-        webDriver.findElement(By.id("small-searchterms")).sendKeys(productName);
-        webDriver.findElement(By.className("search-box-button")).click();
+        searchItem(webDriver,productName);
         
         WebDriverWait wait = new WebDriverWait(webDriver, 10);
         wait.until(ExpectedConditions.elementToBeClickable(webDriver.findElement(By.className("add-to-wishlist-button"))));
@@ -288,7 +242,9 @@ public class ProyectoQA {
         String expectedPrice = stringTokenizer.nextToken();
         String actualPrice = webDriver.findElement(By.className("product-subtotal")).getText();
         
-        boolean correctPrice = (actualPrice.contentEquals(expectedPrice))? true : false;
+        if (!actualPrice.contentEquals(expectedPrice)){
+          correctPrice = false;
+        }
         
         webDriver.findElement(By.name("removefromcart")).click();
         webDriver.findElement(By.className("update-wishlist-button")).click();
@@ -303,7 +259,39 @@ public class ProyectoQA {
     }
     
     webDriver.quit();
-    return emptyCart;
+    return emptyWishList && correctPrice;
   }
   
+  
+  private static boolean checkEmptyWishList(WebDriver webdriver){
+    WebDriverWait wait = new WebDriverWait(webDriver, 10);
+    wait.until(ExpectedConditions.elementToBeClickable(webDriver.findElement(By.className("ico-wishlist")))).click();
+    WebElement emptyMessage = webDriver.findElement(By.className("no-data"));
+    if(emptyMessage != null){
+      if(emptyMessage.getText().equals("The wishlist is empty!")){
+//        System.out.println("El wishlist está vacío");
+        return true;
+      }
+    }
+    return false;
+  }
+  private static boolean checkEmptyShoppingCart(WebDriver webdriver){
+    WebDriverWait wait = new WebDriverWait(webDriver, 10);
+    wait.until(ExpectedConditions.elementToBeClickable(webDriver.findElement(By.id("topcartlink")))).click();
+    WebElement emptyMessage = webDriver.findElement(By.className("no-data"));
+    if(emptyMessage != null){
+      if(emptyMessage.getText().equals("Your Shopping Cart is empty!")){
+//        System.out.println("El Shopping Cart está vacío");
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  private static void searchItem(WebDriver webDriver, String searchTerm){
+    WebElement searchBarElement = webDriver.findElement(By.id("small-searchterms"));
+    searchBarElement.sendKeys(searchTerm);
+    WebElement searchButton = webDriver.findElement(By.xpath("//input[@class='button-1 search-box-button']"));
+    searchButton.click();
+  }
 }
