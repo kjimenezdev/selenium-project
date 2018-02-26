@@ -20,28 +20,28 @@ public class ProyectoQA {
   public static void main(String[] args) {
     
 //    System.setProperty("webdriver.chrome.driver","/Users/konradjimenezc/Downloads/chromedriver");
-    System.setProperty("webdriver.chrome.driver","C:\\Users\\Usuario\\Downloads\\chromedriver_win32\\chromedriver.exe");
-    
+//    System.setProperty("webdriver.chrome.driver","C:\\Users\\Usuario\\Downloads\\chromedriver_win32\\chromedriver.exe");
+    System.setProperty("webdriver.chrome.driver","/Users/rapuc/Downloads/chromedriver");
     /*if(TC1())
-      System.out.println("TC1 Aprovado");
-    else
-      System.err.println("TC1 Fallido");
-    if(TC2())
-      System.out.println("TC2 Aprovado");
-    else
-      System.err.println("TC2 Fallido");
-    if(TC3())
-       System.out.println("TC3 Aprovado");
-    else 
+     System.out.println("TC1 Aprovado");
+     else
+     System.err.println("TC1 Fallido");
+     if(TC2())
+     System.out.println("TC2 Aprovado");
+     else
+     System.err.println("TC2 Fallido");
+     if(TC3())
+     System.out.println("TC3 Aprovado");
+     else 
      System.err.println("TC3 Fallido");
-    if(TC4())
-      System.out.println("TC4 Aprovado");
-    else
-      System.err.println("TC4 Fallido");
-    if(TC5())
-      System.out.println("TC5 Aprovado");
-    else
-      System.err.println("TC5 Fallido");*/
+     if(TC4())
+     System.out.println("TC4 Aprovado");
+     else
+     System.err.println("TC4 Fallido");
+     if(TC5())
+     System.out.println("TC5 Aprovado");
+     else
+     System.err.println("TC5 Fallido");*/
     if(TC7())
       System.out.println("TC7 Aprovado");
     else
@@ -211,11 +211,11 @@ public class ProyectoQA {
   
   public static boolean TC5(){
     String baseUrl = "http://demo.nopcommerce.com";
-      
+    
     webDriver.get(baseUrl);
     WebElement shoppingCartLink = webDriver.findElement(By.xpath("//li[@id='topcartlink']"));
     shoppingCartLink.click();
-      
+    
     Select dropdown = new Select(webDriver.findElement(By.className("country-input")));
     dropdown.selectByVisibleText("Costa Rica");
     webDriver.findElement(By.className("zip-input")).sendKeys("35000");
@@ -245,12 +245,12 @@ public class ProyectoQA {
   
   public static boolean TC7(){
     String baseUrl = "http://demo.nopcommerce.com/";
-      
+    
     webDriver = new ChromeDriver();
-      
+    
     //Ir al URL
     webDriver.get(baseUrl);
-      
+    
     webDriver.findElement(By.className("ico-wishlist")).click();
     
     String expectedMessage = "The wishlist is empty!";
@@ -258,8 +258,10 @@ public class ProyectoQA {
     
     boolean emptyCart = (actualMessage.contentEquals(expectedMessage))? true : false;
     
-    File file = new File("C:\\Users\\Usuario\\Downloads\\CI2400 Investigación - Parametros\\Parametros.csv");
+//    File file = new File("C:\\Users\\Usuario\\Downloads\\CI2400 Investigaciï¿½n - Parametros\\Parametros.csv");
+    File file = new File("/Users/rapuc/Downloads/Parametros.csv");
     if(!file.exists()){
+      System.out.println("Bad file url");
       return false;
     }
     try{
@@ -285,7 +287,7 @@ public class ProyectoQA {
         
         String expectedPrice = stringTokenizer.nextToken();
         String actualPrice = webDriver.findElement(By.className("product-subtotal")).getText();
-    
+        
         boolean correctPrice = (actualPrice.contentEquals(expectedPrice))? true : false;
         
         webDriver.findElement(By.name("removefromcart")).click();
